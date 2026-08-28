@@ -9,22 +9,17 @@ import tools.jackson.databind.json.JsonMapper;
 
 import java.nio.charset.StandardCharsets;
 
-/**
- * Listens on {@code otp.signup.request} and returns the dispatch result
- * via the RPC reply queue.
- *
- * The {@code correlationId} is read from the AMQP {@code x-message-id}
- * header (NOT from the request body) so it survives even if the payload
- * is malformed or partially deserializable.
- */
 public class MessageParser {
 
     private static final Logger log = LoggerFactory.getLogger(MessageParser.class);
 
-    /** AMQP header carrying the per-request correlation id. */
     public static final String CORRELATION_HEADER = "x-message-id";
 
-    public static <T> ConsumerParsedMessage<T> parsedMessage(Message amqpMessage, Class<T> resClass, JsonMapper jsonMapper) {
+    public static <T> ConsumerParsedMessage<T> parsedMessage(
+            Message amqpMessage,
+            Class<T> resClass,
+            JsonMapper jsonMapper)
+    throws RabbitConsumerFailedToParseException {
         String correlationId = extractCorrelationId(amqpMessage);
 
         T payload;
