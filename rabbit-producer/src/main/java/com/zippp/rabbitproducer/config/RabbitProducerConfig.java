@@ -45,25 +45,16 @@ import java.time.Duration;
  */
 @AutoConfiguration
 @ConditionalOnClass(RabbitTemplate.class)
-@ConditionalOnProperty(prefix = "zippp.producer.rabbit", name = "enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "zippp.producer.rabbit", name = "enabled", havingValue = "true")
 @EnableConfigurationProperties(RabbitProducerProperties.class)
 public class RabbitProducerConfig {
 
-    /** Default reply timeout for {@code sendAndReceive} when the target project omits
-     *  the {@code zippp.rabbit.reply-timeout} property. */
+    /**
+     * Default reply timeout for {@code sendAndReceive} when the target project omits
+     * the {@code zippp.rabbit.reply-timeout} property.
+     */
     private static final Duration DEFAULT_REPLY_TIMEOUT = Duration.ofSeconds(5);
 
-    @Bean
-    @ConditionalOnMissingBean
-    public JsonMapper jsonMapper() {
-        return JsonMapper.builder().findAndAddModules().build();
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public MessageConverter jsonMessageConverter(JsonMapper jsonMapper) {
-        return new JacksonJsonMessageConverter(jsonMapper);
-    }
 
     @Bean
     @ConditionalOnMissingBean
